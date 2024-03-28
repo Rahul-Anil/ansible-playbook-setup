@@ -2,18 +2,8 @@
   connection: local
   become: true
 
-  vars:
-    ansible_user_id: "garchomp"
-
   pre_tasks:
-    - name: update repository index (Debian)
-      become: yes
-      tags: always
+    - name: update repositories
       apt:
         update_cache: yes
-      changed_when: false
-      when: ansible_os_family == "Debian"
-
-  tasks:
-    - include_tasks: tasks/packages.yml
-    - include_tasks: tasks/zsh.yml
+      changed_when: False

@@ -1,0 +1,10 @@
+- name: Install packages
+  apt:
+    name:
+      - htop
+      - stow
+      - python3-pip
+      - pipx
+      - openssh-server
+      - git 
+

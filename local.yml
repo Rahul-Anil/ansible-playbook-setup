@@ -1,6 +1,8 @@
 - hosts: localhost
   connection: local
   become: true
+  vars:
+    ansible_user_id: "garchomp"
   pre_tasks:
     - name: update repository index (Debian)
       tags: always
@@ -8,3 +10,6 @@
         update_cache: yes
       changed_when: false
       when: ansible_os_family == "Debian"
+
+  tasks:
+    -include: tasks/packages.yml

@@ -4,6 +4,7 @@
   become: true
   vars:
     ansible_user_id: "garchomp"
+
   pre_tasks:
     - name: update repository index (Debian)
       tags: always
@@ -13,5 +14,6 @@
       when: ansible_os_family == "Debian"
 
   tasks:
-    -include: tasks/packages.yml
-    -include: tasks/zsh.yml
+    -include:
+      - tasks/packages.yml
+      - tasks/zsh.yml

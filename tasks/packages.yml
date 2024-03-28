@@ -8,4 +8,5 @@
       - pipx
       - openssh-server
       - git 
+      - neofetch
     update_cache: yes

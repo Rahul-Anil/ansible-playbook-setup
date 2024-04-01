@@ -1,0 +1,21 @@
+- name: Add the docker GPG apt key
+  apt_repository: 
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Update apt and install docker-ce
+  apt: 
+    name: docker-ce
+    state: present
+    update_cache: yes
+
+- name: Create docker group
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Add user to docker group
+  ansible.builtin.command: 
+    cmd: usermod -aG docker {{ ansible_user_id }}
+
+# TODO: in a bash file run the newgrp command for docker

@@ -1,6 +1,8 @@
 - hosts: localhost
   connection: local
   become: true
+  vars:
+    ansible_user_id: "garchomp"
 
   pre_tasks:
     - name: update repositories
@@ -10,3 +12,6 @@
 
   tasks:
     - include_tasks: tasks/packages.yml
+    - include_tasks: tasks/zsh.yml
+    - include_tasks: tasks/nvm.yml
+    - include_tasks: tasks/docker.yml

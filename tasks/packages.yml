@@ -9,4 +9,11 @@
       - openssh-server
       - git 
       - neofetch
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - virtualenv
+      - python3-setuptools
+    state: latest
     update_cache: yes

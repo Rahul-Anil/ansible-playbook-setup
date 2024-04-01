@@ -1,34 +1,50 @@
-- name: Install zsh
-  tags: zsh, rahul
-  become: true
-  apt:
-    - zsh
-  state: present
-  update_cache: yes
-
-- name: Install fzf
-  become: true
+- name: Install zsh from apt
   apt: 
-    fzf
-  state: present
-  update_cache: yes
+    name: zsh
+    state: present
+    update_cache: yes
 
-- name: Install Oh-my-ZSH
+- name: Check if .oh-my-zsh directory exists
+  ansible.builtin.stat:
+    path: ~/.oh-my-zsh
+  register: ohmyzsh_dir
+
+- name: Install OH_MY_ZSH
   ansible.builtin.git:
     repo: https://github.com/ohmyzsh/ohmyzsh
     dest: ~/.oh-my-zsh
     depth: 1
+  when: ohmyzsh_dir.stat.exists == false
 
 - name: Change user shell to zsh
   become: true
-  ansible.builtin.user:
+  ansible.builtin.user: 
     name: "{{ ansible_user_id }}"
     shell: /bin/zsh
 
-- name: Copy zshrc file 
-  ansible.builtin.copy:
-    src: /files/zhsrc
+- name: Check if .zshrc file exists
+  ansible.builtin.stat:
+    path: /home/{{ ansible_user_id }}/.zshrc
+  register: zshrc_file
+
+- name: Get content of remote .zshrc file
+  ansible.builtin.slurp:
+    src: /home/{{ ansible_user_id }}/.zshrc
+  register: remote_zshrc
+  ignore_errors: true
+
+- name: Get content of local .zshrc file
+  ansible.builtin.slurp:
+    src: files/zshrc
+  delegate_to: localhost
+  register: local_zshrc
+
+- name: Copy .zshrc file
+  ansible.builtin.copy: 
+    src: files/zshrc
     dest: /home/{{ ansible_user_id }}/.zshrc
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_id }}"
     mode: '0644'
+    force: yes
+  when: zshrc_file.stat.exists == false or remote_zshrc.content != local_zshrc.content

@@ -1,0 +1,25 @@
+- name: Remove .pyenv directory if it is present
+  ansible.builtin.file:
+    path: "/root/.pyenv"
+    state: absent
+
+
+- name: Install pyenv
+  tags: python
+  ansible.builtin.shell: >
+    curl https://pyenv.run | zsh
+  args:
+    executable: /bin/zsh
+
+- name: Add pyenv initialization to zshrc
+  block:
+    - ansible.builtin.lineinfile:
+        path: "/{{ ansible_env.HOME }}/.zshrc"
+        line: 'export PYENV_ROOT="$HOME/.pyenv"'
+        create: yes
+    - ansible.builtin.lineinfile:
+        path: "/{{ ansible_env.HOME }}/.zshrc"
+        line: 'export PATH="$PYENV_ROOT/bin:$PATH"'
+    - ansible.builtin.lineinfile:
+        path: "/{{ ansible_env.HOME }}/.zshrc"
+        line: 'eval "$(pyenv init -)"'

@@ -3,6 +3,7 @@
     name: zsh
     state: present
     update_cache: yes
+  become: true
 
 - name: Check if .oh-my-zsh directory exists
   ansible.builtin.stat:
@@ -21,6 +22,7 @@
   ansible.builtin.user: 
     name: "{{ ansible_user_id }}"
     shell: /bin/zsh
+  become: true
 
 - name: Check if .zshrc file exists
   ansible.builtin.stat:
@@ -40,11 +42,17 @@
   register: local_zshrc
 
 - name: Copy .zshrc file
-  ansible.builtin.copy: 
-    src: files/zshrc
+  ansible.builtin.template: 
+    src: templates/zshrc.j2
     dest: /home/{{ ansible_user_id }}/.zshrc
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_id }}"
     mode: '0644'
     force: yes
   when: zshrc_file.stat.exists == false or remote_zshrc.content != local_zshrc.content
+
+- name: Source the zshrc file
+  ansible.builtin.shell: |
+    source /home/{{ ansible_user_id }}/.zshrc
+  args:
+    executable: /bin/zsh

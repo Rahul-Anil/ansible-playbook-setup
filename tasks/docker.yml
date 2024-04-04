@@ -17,5 +17,3 @@
 - name: Add user to docker group
   ansible.builtin.command: 
     cmd: usermod -aG docker {{ ansible_user_id }}
-
-# TODO: in a bash file run the newgrp command for docker

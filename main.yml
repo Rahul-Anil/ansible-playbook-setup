@@ -1,0 +1,28 @@
+- hosts: localhost
+  connection: local
+
+  pre_tasks:
+    - name: update repositories
+      apt:
+        update_cache: yes
+      changed_when: False
+      become: yes
+      
+  
+  tasks:
+    - include_tasks: tasks/packages.yml
+    - include_tasks: tasks/zsh.yml
+  
+  roles:
+    - role: staticdev.pyenv
+      vars:
+        pyenv_shellrc_file: "{{ ansible_env.HOME }}/.zhsrc"
+        pyenv_path: "{{ ansible_env.HOME }}/.pyenv"
+        pyenvrc_path: "{{ ansible_env.HOME }}"
+        # pyenv_owner: "{{ instance_owner }}"
+        pyenv_python_vesrsion:
+          - 3.12.1
+    - role: morgangraphics.ansible_role_nvm
+    - role: geerlingguy.docker
+      become: yes
+        

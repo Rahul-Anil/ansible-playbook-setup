@@ -2,4 +2,9 @@
   ansible.builtin.shell: >
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
   args:
+    executable: /bin/zsh
+    chdir: "{{ ansible_env.HOME }}"
     creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
+- name: Setup .zshrc
+  ansible.builtin.lin
